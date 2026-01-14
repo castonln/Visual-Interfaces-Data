@@ -1,2 +1,4 @@
 # Visual-Interfaces-Data
-Projects from CS5124
+Logan Castonguay
+Computer Science Class of 2026
+University of Cincinnati
