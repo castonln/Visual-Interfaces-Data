@@ -13,20 +13,20 @@ var path = d3.geoPath().projection(projection);
 // Data structures
 var map = new Map();
 var colorScale = d3.scaleThreshold()
-  .domain([10, 20, 40, 60, 80, 100])
+  .domain([80, 85, 90, 95, 100])
   .range(d3.schemeBlues[7]);
 
 // Load data
 Promise.all([
   d3.json("data/world.geojson"),
-  d3.csv("data/share-of-individuals-using-the-internet-2016.csv")
+  d3.csv("data/people-who-report-having-friends-or-relatives-they-can-count-on.csv")
 ]).then(ready);
 
 function ready([topo, csvData]) {
 
   // Load CSV values into the map
   csvData.forEach(d => {
-    map.set(d.Code, +d["Share of the population using the Internet"]);
+    map.set(d.Code, +d["People who report having friends or relatives they can count on"]);
   });
 
   svg.append("g")
