@@ -20,8 +20,8 @@ d3.csv('data/combined_data.csv')
         console.error('Error loading the data for friends / relatives ' + error);
     });
 
-function drawScatterPlot(data, domainAttr, valueAttr) {
-    const svg = d3.select('body').append('svg')
+function drawScatterPlot(data, domainAttr, valueAttr, elementId) {
+    const svg = d3.select(elementId)
         .attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom)
         .append('g')

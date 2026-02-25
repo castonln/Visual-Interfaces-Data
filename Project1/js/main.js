@@ -7,68 +7,81 @@ var margin = { top: 30, right: 30, bottom: 70, left: 60 },
 	width = 1000 - margin.left - margin.right,
 	height = 500 - margin.top - margin.bottom;
 
-// d3.csv('data/people-who-report-having-friends-or-relatives-they-can-count-on.csv')
-// 	.then(data => {
-// 		console.log('Data loading complete. Work with dataset.');
+function drawBarChart(data, xAttr, yAttr, elementId) {
+	// Trying to make it its own separate module meant passing way too many vars
 
-// 		// //DATA PROCESSING
-// 		data.forEach(d => {
-// 			d["People who report having friends or relatives they can count on"] = parseFloat(d["People who report having friends or relatives they can count on"])
-// 			d.Year = parseInt(d.Year)
-// 		});
+	data.sort(function (b, a) {
+		return a[yAttr] - b[yAttr];
+	});
 
-// 		drawBarChart(
-// 			data,
-// 			"Entity",
-// 			"People who report having friends or relatives they can count on",
-// 		);
+	const svg = d3.select(elementId)
+		.attr('width', width + margin.left + margin.right)
+		.attr('height', height + margin.top + margin.bottom)
+		.append('g')
+		.attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-// 	})
-// 	.catch(error => {
-// 		console.error('Error loading the data for friends / relatives ' + error);
-// 	});
+	// X axis
+	var x = d3.scaleBand()
+		.range([0, width])
+		.domain(data.map(function (d) { return d[xAttr]; }))
+		.padding(0.2);
+	svg.append("g")
+		.attr("transform", "translate(0," + height + ")")
+		.call(d3.axisBottom(x))
+		.selectAll("text")
+		.attr("transform", "translate(-10,0)rotate(-45)")
+		.style("text-anchor", "end");
 
-// function drawBarChart(data, domainAttr, valueAttr) {
-// 	// Trying to make it its own separate module meant passing way too many vars
+	// Add Y axis
+	var y = d3.scaleLinear()
+		.domain([0, 100])
+		.range([height, 0]);
+	svg.append("g")
+		.call(d3.axisLeft(y));
 
-// 	data.sort(function (b, a) {
-// 		return a[valueAttr] - b[valueAttr];
-// 	});
+	// Bars
+	svg.selectAll("mybar")
+		.data(data)
+		.enter()
+		.append("rect")
+		.attr("x", function (d) { return x(d[xAttr]); })
+		.attr("y", function (d) { return y(d[yAttr]); })
+		.attr("width", x.bandwidth())
+		.attr("height", function (d) { return height - y(d[yAttr]); })
+		.attr("fill", "#69b3a2")
 
-// 	const svg = d3.select('body').append('svg')
-// 		.attr('width', width + margin.left + margin.right)
-// 		.attr('height', height + margin.top + margin.bottom)
-// 		.append('g')
-// 		.attr('transform', `translate(${margin.left}, ${margin.top})`);
+}
 
-// 	// X axis
-// 	var x = d3.scaleBand()
-// 		.range([0, width])
-// 		.domain(data.map(function (d) { return d[domainAttr]; }))
-// 		.padding(0.2);
-// 	svg.append("g")
-// 		.attr("transform", "translate(0," + height + ")")
-// 		.call(d3.axisBottom(x))
-// 		.selectAll("text")
-// 		.attr("transform", "translate(-10,0)rotate(-45)")
-// 		.style("text-anchor", "end");
+function drawScatterPlot(data, xAttr, yAttr, elementId) {
+	const svg = d3.select(elementId)
+		.attr('width', width + margin.left + margin.right)
+		.attr('height', height + margin.top + margin.bottom)
+		.append('g')
+		.attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-// 	// Add Y axis
-// 	var y = d3.scaleLinear()
-// 		.domain([0, 100])
-// 		.range([height, 0]);
-// 	svg.append("g")
-// 		.call(d3.axisLeft(y));
+	// Add X axis
+	var x = d3.scaleLinear()
+		.domain([0, 100])
+		.range([0, width]);
+	svg.append("g")
+		.attr("transform", "translate(0," + height + ")")
+		.call(d3.axisBottom(x));
 
-// 	// Bars
-// 	svg.selectAll("mybar")
-// 		.data(data)
-// 		.enter()
-// 		.append("rect")
-// 		.attr("x", function (d) { return x(d[domainAttr]); })
-// 		.attr("y", function (d) { return y(d[valueAttr]); })
-// 		.attr("width", x.bandwidth())
-// 		.attr("height", function (d) { return height - y(d[valueAttr]); })
-// 		.attr("fill", "#69b3a2")
+	// Add Y axis
+	var y = d3.scaleLinear()
+		.domain([0, 100])
+		.range([height, 0]);
+	svg.append("g")
+		.call(d3.axisLeft(y));
 
-// }
+	// Add dots
+	svg.append('g')
+		.selectAll("dot")
+		.data(data)
+		.enter()
+		.append("circle")
+		.attr("cx", function (d) { return x(d[xAttr]); })
+		.attr("cy", function (d) { return y(d[yAttr]); })
+		.attr("r", 1.5)
+		.style("fill", "#69b3a2")
+}

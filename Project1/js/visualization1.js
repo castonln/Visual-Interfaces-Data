@@ -1,17 +1,20 @@
-d3.csv('data/people-who-report-having-friends-or-relatives-they-can-count-on.csv')
+d3.csv('data/combined_data.csv')
 	.then(data => {
 		console.log('Data loading complete. Work with dataset.');
 
 		// //DATA PROCESSING
 		data.forEach(d => {
 			d["People who report having friends or relatives they can count on"] = parseFloat(d["People who report having friends or relatives they can count on"])
-			d.Year = parseInt(d.Year)
+			d["Share of the population using the Internet"] = parseFloat(d["Share of the population using the Internet"])
 		});
+
+		console.log(data)
 
 		drawBarChart(
 			data,
 			"Entity",
 			"People who report having friends or relatives they can count on",
+			"#friends-or-relatives-bar-chart"
 		);
 
 	})
@@ -19,14 +22,14 @@ d3.csv('data/people-who-report-having-friends-or-relatives-they-can-count-on.csv
 		console.error('Error loading the data for friends / relatives ' + error);
 	});
 
-function drawBarChart(data, domainAttr, valueAttr) {
+function drawBarChart(data, domainAttr, valueAttr, elementId) {
 	// Trying to make it its own separate module meant passing way too many vars
 
 	data.sort(function (b, a) {
 		return a[valueAttr] - b[valueAttr];
 	});
 
-	const svg = d3.select('body').append('svg')
+	const svg = d3.select(elementId)
 		.attr('width', width + margin.left + margin.right)
 		.attr('height', height + margin.top + margin.bottom)
 		.append('g')

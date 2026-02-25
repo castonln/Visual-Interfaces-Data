@@ -1,42 +1,67 @@
-var svg = d3.select("svg"),
-  width = +svg.attr("width"),
-  height = +svg.attr("height");
+var friendsOrRelativesSvg = d3.select("#friends-or-relatives-graph"),
+  width = +friendsOrRelativesSvg.attr("width"),
+  height = +friendsOrRelativesSvg.attr("height");
 
-// Projection
-var projection = d3.geoMercator()
+var usingTheInternetSvg = d3.select("#using-the-internet-graph"),
+  width = +usingTheInternetSvg.attr("width"),
+  height = +usingTheInternetSvg.attr("height");
+
+// Map and projection
+const path = d3.geoPath();
+const projection = d3.geoMercator()
   .scale(70)
   .center([0, 20])
   .translate([width / 2, height / 2]);
 
-var path = d3.geoPath().projection(projection);
+// Data and color scale
+var friendsOrRelativesData = new Map()
+var usingTheInternetData = new Map()
 
-// Data structures
-var map = new Map();
-var colorScale = d3.scaleThreshold()
-  .domain([10, 20, 40, 60, 80, 100])
+const usingTheInternetDomain = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+const friendsOrRelativesDomain = [80, 85, 90, 95, 100]
+const colorScale = d3.scaleThreshold()
+  .domain(usingTheInternetDomain)
   .range(d3.schemeBlues[7]);
 
-// Load data
+// Load external data and boot
 Promise.all([
-  d3.json("data/world.geojson"),
-  d3.csv("data/share-of-individuals-using-the-internet-2016.csv")
-]).then(ready);
+  d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson"),
+  d3.csv("../data/combined_data.csv", function (d) {
+    friendsOrRelativesData.set(d["Code"], +d["People who report having friends or relatives they can count on"]) // create table
+  },),
+  d3.csv("../data/share-of-individuals-using-the-internet-2016.csv", function (d) {
+    usingTheInternetData.set(d["Code"], d["Share of the population using the Internet"])
+  },),
+]).then(function (loadData) {
+  let topo = loadData[0]
 
-function ready([topo, csvData]) {
-
-  // Load CSV values into the map
-  csvData.forEach(d => {
-    map.set(d.Code, +d["Share of the population using the Internet"]);
-  });
-
-  svg.append("g")
+  // Draw the map
+  usingTheInternetSvg.append("g")
     .selectAll("path")
     .data(topo.features)
-    .enter()
-    .append("path")
-    .attr("d", path)
-    .attr("fill", d => {
-      const value = map.get(d.id) || 0;
-      return colorScale(value);
-    });
-}
+    .join("path")
+    // draw each country
+    .attr("d", d3.geoPath()
+      .projection(projection)
+    )
+    // set the color of each country
+    .attr("fill", function (d) {
+      d.total = usingTheInternetData.get(d.id) || 0;
+      return colorScale(d.total);
+    })
+
+  // Draw the map
+  friendsOrRelativesSvg.append("g")
+    .selectAll("path")
+    .data(topo.features)
+    .join("path")
+    // draw each country
+    .attr("d", d3.geoPath()
+      .projection(projection)
+    )
+    // set the color of each country
+    .attr("fill", function (d) {
+      d.total = friendsOrRelativesData.get(d.id) || 0;
+      return colorScale(d.total);
+    })
+})

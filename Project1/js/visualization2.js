@@ -1,4 +1,4 @@
-d3.csv('data/share-of-individuals-using-the-internet-2016.csv')
+d3.csv('data/combined_data.csv')
     .then(data => {
         console.log('Data loading complete. Work with dataset.');
 
@@ -8,11 +8,11 @@ d3.csv('data/share-of-individuals-using-the-internet-2016.csv')
             d.Year = parseInt(d.Year)
         });
 
-        drawBarChartHorizontal(
-            data,
-            "Entity",
-            "Share of the population using the Internet",
-        );
+        // drawBarChartHorizontal(
+        //     data,
+        //     "Entity",
+        //     "Share of the population using the Internet",
+        // );
 
     })
     .catch(error => {
@@ -27,7 +27,7 @@ function drawBarChartHorizontal(data, domainAttr, valueAttr) {
         return a[valueAttr] - b[valueAttr];
     });
 
-    const svg = d3.select('body').append('svg')
+    const svg = d3.select('#using-the-internet-bar-chart')
 		.attr('width', width + margin.left + margin.right)
 		.attr('height', height + margin.top + margin.bottom)
 		.append('g')
