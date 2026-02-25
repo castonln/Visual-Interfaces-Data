@@ -1,0 +1,51 @@
+/* Dashboard layout */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 25px;
+    padding: 20px;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.dashboard-grid h6 {
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 25px;
+    padding: 20px;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.full-width-chart {
+    max-width: 1300px;
+    margin: 20px auto;
+}
+
+/* nice boxes */
+.dashboard-grid svg,
+.full-width-chart div {
+    background: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+h6 {
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.axis-label {
+    font-size: 12px;
+    fill: #333;
+}
+
+.map-value-label {
+    font-size: 12px;
+    fill: #333;
+}
