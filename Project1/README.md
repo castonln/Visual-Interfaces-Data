@@ -75,3 +75,5 @@ I used a the references at [D3 Graph Gallery](https://d3-graph-gallery.com/) to 
 During development, I used Microsoft Copilot to answer questions about debugging or D3's documentation. My typical process included feeding it my HTML and JS code along with a prompt describing what I thought the error was and the error code delivered to the browser in the Developer Console.
 
 ### Demo
+
+[Data Visualization Project 1 Demo](https://youtu.be/1iCSxa5n7mw)
